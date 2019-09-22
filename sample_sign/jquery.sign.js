@@ -1,4 +1,4 @@
-//tuki jquery ext
+//jquery ext sign
 (function ($, undefined) {
     $.decryptAES = function (base64DataStr, key, iv, mode = CryptoJS.mode.CBC, padding = CryptoJS.pad.Pkcs7) {
         let ciphertext = CryptoJS.enc.Base64.parse(base64DataStr);
@@ -14,8 +14,7 @@
         let iv = CryptoJS.enc.Utf8.parse(ivStr);
         let encryptedHex = CryptoJS.AES.encrypt(data, key, {iv, mode, padding});
         let encryptedWA = CryptoJS.enc.Hex.parse(encryptedHex.toString());
-        let encryptedB64 = CryptoJS.enc.Base64.stringify(encryptedWA);
-        return encryptedB64;
+        return CryptoJS.enc.Base64.stringify(encryptedWA);
     };
 
 
