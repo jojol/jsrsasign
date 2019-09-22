@@ -84,14 +84,19 @@
 
 
         function onclickAESEncrypt() {
+            let con = document.aes_form.aes_con.value;
             let key = document.aes_form.aes_key.value;
-            let encrypt_con = encryptAES(document.aes_form.aes_con.value, key, '1234567890123456');
+            let iv = document.aes_form.aes_iv.value;
+            let encrypt_con = encryptAES(con, key, iv);
             // document.form1.siggenerated.value = linebrk(hSig, 64);
             document.aes_form.aes_encrypt_result.value = encrypt_con;
         }
 
         function onclickAESDecrypt() {
-            let decrypt_con = decryptAES(document.aes_form.aes_encrypt_result.value, document.aes_form.aes_key.value, '1234567890123456');
+            let con = document.aes_form.aes_encrypt_result.value;
+            let key = document.aes_form.aes_key.value;
+            let iv = document.aes_form.aes_iv.value;
+            let decrypt_con = decryptAES(con, key, iv);
             // document.form1.siggenerated.value = linebrk(hSig, 64);
             document.aes_form.aes_decrypt_result.value = decrypt_con;
         }
@@ -256,7 +261,7 @@ dqRh3rcNvpY6BKJqFapda1DjdcncZECMizT/GMrc1w==
             <td>
                 <br/>
                 Text message to be crypt.<br/>
-                <input type="text" name="con_crypt" size="50" value="aaa"/><br/>
+                <input type="text" name="con_crypt" size="50" value="{'key':'3OK+u3ivTSj3zwjt','iv':'12341234asdfasdf'}"/><br/>
             </td>
             <td></td>
             <td></td>
@@ -301,11 +306,13 @@ dqRh3rcNvpY6BKJqFapda1DjdcncZECMizT/GMrc1w==
 
         <tr>
             <td>
-                Public Key Cert<br/>
-                <input type="text" name="aes_key" size="50" value="3OK+u3ivTSj3zwjt"/><br/>
+                AES Key<br/>
+                <input type="text" name="aes_key" size="24" value="3OK+u3ivTSj3zwjt"/><br/>
             </td>
             <td></td>
             <td>
+                AES iv<br/>
+                <input type="text" name="aes_iv" size="24" value="12341234asdfasdf"/><br/>
             </td>
         </tr>
         <tr>
@@ -326,21 +333,23 @@ Then you can see signature verification result in the top of right.
         </tr>
         <tr>
             <td>
+                <br/>
+                encrypt result<br/>
                 <input type="button" value="encrypt" onClick="onclickAESEncrypt();"/><br/>
             </td>
             <td></td>
             <td>
+                <br/>
+                decrypt result<br/>
                 <input type="button" value="decrypt" onClick="onclickAESDecrypt();"/><br/>
             </td>
         </tr>
         <tr>
             <td>
-                encrypt result<br/>
                 <textarea name="aes_encrypt_result" rows="4" cols="65"></textarea>
             </td>
             <td></td>
             <td>
-                decrypt result<br/>
                 <textarea name="aes_decrypt_result" rows="4" cols="65"></textarea>
             </td>
             </td>
