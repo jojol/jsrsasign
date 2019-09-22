@@ -49,10 +49,11 @@
                     <option value="SHA256withRSA">SHA256
                     <option value="SHA512withRSA">SHA512
                 </select>
-                <input type="button" value="Sign to this message &darr;" onClick="onclickRSASign();"/><br/>
+                <input type="button" value="DoRSASign" onClick="onclickRSASign();"/><br/>
+                <input type="button" value="Import Sign Src" onClick="onclickRSASignImport();"/><br/>
             </td>
             <td><br/>
-                <input type="button" value="Verify this signature &uarr;" onClick="onclickRSAVerify();"/><br/>
+                <input type="button" value="DoRSAVerify" onClick="onclickRSAVerify();"/><br/>
             </td>
         </tr>
 
@@ -231,6 +232,11 @@ Choose hash algorithm for signing 'SHA1' or 'SHA256'.
         'OzU=\n' +
         '-----END CERTIFICATE-----\n';
 
+
+    function onclickRSASignImport() {
+        let sign_con = document.aes_form.aes_con.value;
+        document.form_rsa_sign.sign_src.value = $.makeSignData(JSON.parse(sign_con));
+    }
 
     function onclickRSASign() {
         // let rsa = new RSAKey();
