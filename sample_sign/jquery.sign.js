@@ -15,8 +15,6 @@
         let encryptedHex = CryptoJS.AES.encrypt(data, key, {iv, mode, padding});
         let encryptedWA = CryptoJS.enc.Hex.parse(encryptedHex.toString());
         let encryptedB64 = CryptoJS.enc.Base64.stringify(encryptedWA);
-        console.log(encryptedB64);
-        console.log($.decryptAES(encryptedB64, keyStr, ivStr));
         return encryptedB64;
     };
 

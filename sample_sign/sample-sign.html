@@ -290,7 +290,10 @@ Choose hash algorithm for signing 'SHA1' or 'SHA256'.
         let con = aes_form.aes_con.value;
         let key = aes_form.aes_key.value;
         let iv = aes_form.aes_iv.value;
-        aes_form.aes_encrypt_result.value = $.encryptAES(con, key, iv);
+        let encrypt_data = $.encryptAES(con, key, iv);
+        aes_form.aes_encrypt_result.value = encrypt_data;
+        console.log(encrypt_data);
+        console.log($.decryptAES(encrypt_data, key, iv));
     }
 
     function onclickAESDecrypt() {
