@@ -308,5 +308,7 @@ Choose hash algorithm for signing 'SHA1' or 'SHA256'.
     document.form_rsa_sign.cert.value = pub_cert;
     document.form_rsa_crypt.prv_key.value = prv_key;
     document.form_rsa_crypt.pub_cert.value = pub_cert;
+    document.aes_form.aes_key.value = $.randomStr();
+    document.aes_form.aes_iv.value = $.randomStr();
 </script>
 </html>

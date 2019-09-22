@@ -1,5 +1,26 @@
 //jquery ext sign
 (function ($, undefined) {
+    function is_continuous_indexed_array(src_arr) {
+        let keys = [...src_arr.keys()];
+        let key_all = Array.from(new Set([...keys, ...keys.keys()]));
+        return keys.length === key_all.length;
+    }
+
+    $.isSet = d => Boolean(d); //0,"",null,undefined,NaN
+    $.isInteger = d => Number.isInteger(d);
+    $.isString = d => typeof d === 'string' || d instanceof String;
+    $.isNumber = d => typeof d === 'number' || d instanceof Number;
+    $.isBoolean = d => typeof d === 'boolean' || d instanceof Boolean;
+    $.isSymbol = d => typeof d === 'symbol' || d instanceof Symbol;
+    $.isFunction = d => typeof d === 'function';
+    $.isEmpty = d => !d; //0,"",null,undefined,NaN
+    $.isArray = d => Array.isArray(d);
+    $.isObject = d => $.isSet(d) && (typeof d === 'object');
+    $.isEmptyArr = d => $.isEmpty(d) || ($.isArray(d) && d.length <= 0); //0,"",null,undefined,NaN
+    $.isNotEmptyArr = d => $.isArray(d) && d.length > 0; //0,"",null,undefined,NaN
+    $.arrayLength = d => $.isArray(d) ? d.length : 0; //0,"",null,undefined,NaN
+    $.isEmptyObj = d => $.isSet(d) && $.isObject(d) && $.isEmptyArr(Object.keys(d)); //0,"",null,undefined,NaN
+
     $.decryptAES = function (base64DataStr, key, iv, mode = CryptoJS.mode.CBC, padding = CryptoJS.pad.Pkcs7) {
         let ciphertext = CryptoJS.enc.Base64.parse(base64DataStr);
         key = CryptoJS.enc.Utf8.parse(key);
@@ -54,5 +75,54 @@
     $.decryptRSA = function (cryptData = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...') {
         let prv_key = KEYUTIL.getKey(prvKey);
         return KJUR.crypto.Cipher.decrypt(cryptData, prv_key, 'RSA');
+    };
+
+    $.makeSignData = function (data) {
+        if ($.isObject(value) || $.isArray(value)) {
+            let sortedData = [];
+            if ($.isObject(data)) {
+                let reqKeys = Object.keys(data).sort();
+                for (let key of reqKeys) {
+                    let value = data[key];
+                    if ($.isObject(value) || $.isArray(value)) {
+                        sortedData[key] = $.makeSignData(value);
+                    } else {
+                        sortedData[key] = value.toString();
+                    }
+                }
+            } else if (is_continuous_indexed_array(data)) {
+                for (let value of data) {
+                    if ($.isObject(value) || $.isArray(value)) {
+                        sortedData.push($.makeSignData(value));
+                    } else {
+                        sortedData.push(value.toString());
+                    }
+                }
+                sortedData = sortedData.sort();
+            } else {
+                let reqKeys = data.keys().sort();
+                for (let key of reqKeys) {
+                    let value = data[key];
+                    if ($.isObject(value) || $.isArray(value)) {
+                        sortedData[key] = $.makeSignData(value);
+                    } else {
+                        sortedData[key] = value.toString();
+                    }
+                }
+            }
+            return sortedData.join('==');
+        } else {
+            return data.toString();
+        }
+    };
+
+    $.randomStr =function(len=16) {
+        let $chars = '+=ABCDEFGHIJKLMNPOQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let maxPos = $chars.length;
+        let pwd = '';
+        for (let i = len; i >0; i--) {
+            pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+        }
+        return pwd;
     };
 })(jQuery);
