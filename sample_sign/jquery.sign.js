@@ -54,8 +54,8 @@
         return KJUR.crypto.Cipher.encrypt(dataStr, pub_key, 'RSA');
     };
 
-    $.decryptRSA = function (dataSigned = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...') {
+    $.decryptRSA = function (cryptData = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...') {
         let prv_key = KEYUTIL.getKey(prvKey);
-        return KJUR.crypto.Cipher.decrypt(dataSigned, prv_key, 'RSA');
+        return KJUR.crypto.Cipher.decrypt(cryptData, prv_key, 'RSA');
     };
 })(jQuery);

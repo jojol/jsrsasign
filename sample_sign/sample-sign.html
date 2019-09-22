@@ -1,170 +1,9 @@
 <html>
 <head>
     <title>Sample Application for RSA signing in JavaScript</title>
-    <script language="JavaScript" type="text/javascript" src="../jsrsasign-all-min.js"></script>
-    <script language="JavaScript" type="text/javascript">
-        let prv_key = '-----BEGIN PRIVATE KEY-----\n' +
-            'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCwXIllX7MGD6QE\n' +
-            'Vyc8Eppf4578fwRsmSJNeq7fzLpV6pBJLbHnlooAvYKP6roLErxN2/ZpZtlFF+0X\n' +
-            'FYlURSlILh9Qux7HiFzCAYRLDoPURKbEHMXUecPfVMhcb4ZdBCIgB6j/Ys83j+Qx\n' +
-            '00x4WDBdvHF8TiRfUL7h4kPVNTBLP7VPzhdxr2idZSmilqG2BDrzRke4ppUkI8TP\n' +
-            'fHoEZTdQi3DBboDnu/6I4NNw3PgbJbFqHnXY8RvgThqL0KOMnt6vaFjm52xli1yj\n' +
-            'zivGkJbZvsHr1pWTPzwFjNRsLiLGp+wuf7G1ttxVjTiaxpkYtz3l4NP+axvC9akV\n' +
-            'YEiMiHCnAgMBAAECggEAcQR8D/jJ8uJnC1kGjZqmTzjBE7IaFbX0o44xLr410wUk\n' +
-            'PaEI1w5DlcHcP3n+i0YQYhzJxjXgmkSA7UAh510C3XyhGM0xJlEekD0EmEzO8mKk\n' +
-            'NBz0MftuKFpeo83cXxNdAwWlqTOa81JEvCFaaeyp4gf2+d/hsys9h+fF7IXPUwiK\n' +
-            'Ca+DURlRPObiObvdfdVAUxrdXNTaLOekwm5EtOKm+RiiOfJ66Kb8exlLUwgqFTq9\n' +
-            '5xDkZoB6QncfJC0IaHzroMn0d9N6YA1HPJxF8ubBgmkFsQhMKdkTVXJIEEaEC1BT\n' +
-            'O+GQRqg9Fq79sRCt1LsLqcUqm5OFFU3HswCHiWUJQQKBgQDdciRJy94MtMLrE3yI\n' +
-            'SzZOkesocNiimRge2+YGl6nxxWELWXwG4vdZ8Cki8Hqyuo13dzwycuFOfxZt4XIo\n' +
-            'v5Lzq31PD27Hpl73uDRpiSJ3ojLkiobNAx10npg04nVzusi7hrDICCaZEQBPAfgM\n' +
-            'SeEbJNN9WUmIw3q5qwNFLZ70kQKBgQDL4XUbgh5X7t/1+DywpiuZNfLTKVA3BZQz\n' +
-            'y0P+7qGS4p1NC3Yloy3rAvbGjZoixUaKFO254yL5Yjus8CAO0+PL6u3SkZrKGmB3\n' +
-            'cG/24s9LWosrVFQH5Qj8vz7bhtpdn5OQyvydufJOBuAaGtJ7drO0sDLyEHXfEK0x\n' +
-            'XUTMZthNtwKBgQCCI9llsTT+/KBsrJgMNT9mL2Um8CKwdA5z3EGz8B/E4X2lwOId\n' +
-            '3fcF2Rkj2nYRYYdQBTfQYik9C30v+EUx41xGbasH8oblOEYpiQzsVNZ3vk/wdeTA\n' +
-            'ySrfZXEH62qhJ81eP8rW08tzO0WWKQ8Qkb6ESEEuMnH/uPn/8ZvLZQM8sQKBgE7d\n' +
-            'dJZie+hZ38pe7uMKNF08sCScm4ndH5n1a+UGW/vcqyptX5Npjs6Uw+7EQbZnh0TM\n' +
-            'mbTJNvMu25SnAk+aCUkNJFfKuQyqrVwmYzkmPTeR27m0EhlHsHVMaT0z6e5DVyqw\n' +
-            'So2cqy0hnbibXYYiwZsIeXyHf4D9C3HH+V/z/IH7AoGBAKj0gPoqMMnISh84GlCP\n' +
-            'U+UfRF5Jyl14t5oPizub5FEaq/aywCA4GchDmGUtIMrejZTvgxu7QSKOjpv7y4Sl\n' +
-            'ydmTRjb9sSaWYohGYV24RWgN11/Pq4JWSKfZyu0OuZOvyTV2l7uusBs/G5Ahnu2E\n' +
-            'BqB10N7adUh7UZ+yhHwHwFc1\n' +
-            '-----END PRIVATE KEY-----\n';
-        let cert_key = '-----BEGIN CERTIFICATE-----\n' +
-            'MIID7jCCAtagAwIBAgICMMswDQYJKoZIhvcNAQELBQAwczELMAkGA1UEBhMCQ04x\n' +
-            'EDAOBgNVBAgMB1RpYW5qaW4xEDAOBgNVBAcMB1RpYW5qaW4xFTATBgNVBAoMDENI\n' +
-            'SU5BU1NMIEluYzEpMCcGA1UEAwwgQ0hJTkFTU0wgQ2VydGlmaWNhdGlvbiBBdXRo\n' +
-            'b3JpdHkwHhcNMTkwOTIyMDg1MDE2WhcNMjAwOTIxMDg1MDE2WjCBgDELMAkGA1UE\n' +
-            'BhMCQ04xEDAOBgNVBAgMB1NpY2h1YW4xEDAOBgNVBAoMB0hpdCBQaW4xDzANBgNV\n' +
-            'BAsMBkRFViBJVDEVMBMGA1UEAwwMd3d3LnBpbi50ZXN0MSUwIwYJKoZIhvcNAQkB\n' +
-            'FhZ6aG91amlob25nMTlAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n' +
-            'MIIBCgKCAQEAsFyJZV+zBg+kBFcnPBKaX+Oe/H8EbJkiTXqu38y6VeqQSS2x55aK\n' +
-            'AL2Cj+q6CxK8Tdv2aWbZRRftFxWJVEUpSC4fULsex4hcwgGESw6D1ESmxBzF1HnD\n' +
-            '31TIXG+GXQQiIAeo/2LPN4/kMdNMeFgwXbxxfE4kX1C+4eJD1TUwSz+1T84Xca9o\n' +
-            'nWUpopahtgQ680ZHuKaVJCPEz3x6BGU3UItwwW6A57v+iODTcNz4GyWxah512PEb\n' +
-            '4E4ai9CjjJ7er2hY5udsZYtco84rxpCW2b7B69aVkz88BYzUbC4ixqfsLn+xtbbc\n' +
-            'VY04msaZGLc95eDT/msbwvWpFWBIjIhwpwIDAQABo34wfDAJBgNVHRMEAjAAMC8G\n' +
-            'CWCGSAGG+EIBDQQiFiBDSElOQVNTTCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAd\n' +
-            'BgNVHQ4EFgQUsP1o1Wc7ZwJ/yIlCrRMjlhaxMWkwHwYDVR0jBBgwFoAUXB8j+sjh\n' +
-            'ITHC2Df2iPzSb8JUQzMwDQYJKoZIhvcNAQELBQADggEBAFPwCHVJ3BvG7bL92T2V\n' +
-            '85bOmGqYbSistRILMpLfLoUlVDODNR4Q55gj0l3me4vsLNxiInlermJ3nXhnCmNg\n' +
-            'utjQwrO/Gd9XFfkdbdWdEejAM9YIrj2Vn5aIk5Q2GVukEhjwj71dnQuzv2GZrPQR\n' +
-            'FXE5SNI8wAAHyF/e/ShpwK/muwllBiKOEykkcdgNSHIV1aCstgmpaOP3JJYDVxc7\n' +
-            'vmAf2EPQOvJvLcWzIruxDFFW9CKU8iht1wQSmvl3DvlqCiQtu2puZ+gZJA4RYseE\n' +
-            'Gz0mjR8e8qpTp5NWl8PD1OxYMJU6ODZbo3Oq4taxSLkIlJ3ARfTY4I+9V6kLYJLG\n' +
-            'OzU=\n' +
-            '-----END CERTIFICATE-----\n';
-        function decryptAES(base64DataStr, key, iv, mode = CryptoJS.mode.CBC, padding = CryptoJS.pad.Pkcs7) {
-            let ciphertext = CryptoJS.enc.Base64.parse(base64DataStr);
-            key = CryptoJS.enc.Utf8.parse(key);
-            iv = CryptoJS.enc.Utf8.parse(iv);
-            let decrypted = CryptoJS.AES.decrypt({key, iv, ciphertext}, key, {iv, mode, padding});
-            return CryptoJS.enc.Utf8.stringify(decrypted);
-        }
-
-        function encryptAES(dateStr, keyStr, ivStr, mode = CryptoJS.mode.CBC, padding = CryptoJS.pad.Pkcs7) {
-            let data = CryptoJS.enc.Utf8.parse(dateStr);
-            let key = CryptoJS.enc.Utf8.parse(keyStr);
-            let iv = CryptoJS.enc.Utf8.parse(ivStr);
-            let encryptedHex = CryptoJS.AES.encrypt(data, key, {iv, mode, padding});
-            let encryptedWA = CryptoJS.enc.Hex.parse(encryptedHex.toString());
-            let encryptedB64 = CryptoJS.enc.Base64.stringify(encryptedWA);
-            console.log(encryptedB64);
-            console.log(decryptAES(encryptedB64, keyStr, ivStr));
-            return encryptedB64;
-        }
-
-        function onclickRSASign() {
-            // let rsa = new RSAKey();
-            // rsa.readPrivateKeyFromPEMString(document.form1.prvkey1.value);
-            // let hashAlg = document.form1.hashalg.value;
-            // let hSig = rsa.sign(document.form1.msgsigned.value, hashAlg);
-            // document.form1.siggenerated.value = hSig;
-
-            // initialize
-            let sig = new KJUR.crypto.Signature({"alg": document.form1.hashalg.value});
-            sig.init(document.form1.prvkey1.value);   // rsaPrivateKey of RSAKey object// initialize for signature generation
-            sig.updateString(document.form1.msgsigned.value);// update data
-            let sigValueHex = sig.sign();// calculate signature
-            document.form1.siggenerated.value = sigValueHex;
-        }
-
-        function onclickRSAVerify() {
-            // let sMsg = document.form1.msgverified.value;
-            // let hSig = document.form1.sigverified.value;
-            // let pubKey = KEYUTIL.getKey(document.form1.cert.value);
-            // let isValid = pubKey.verify(sMsg, hSig);
-
-            // initialize
-            let sig = new KJUR.crypto.Signature({"alg": document.form1.hashalg.value}); // initialize for signature validation
-            sig.init(document.form1.cert.value); // signer's certificate
-            sig.updateString(document.form1.msgsigned.value);// update data
-            let isValid = sig.verify(document.form1.siggenerated.value); // verify signature
-            alert('verify result:'+isValid);
-            // display verification result
-            if (isValid) {
-                _displayStatus("valid");
-            } else {
-                _displayStatus("invalid");
-            }
-        }
-
-        function copyMsgAndSig() {
-            _displayStatus("reset");
-            document.form1.msgverified.value = document.form1.msgsigned.value;
-            document.form1.sigverified.value = document.form1.siggenerated.value;
-        }
-
-        function _displayStatus(sStatus) {
-            let div1 = document.getElementById("verifyresult");
-            if (sStatus == "valid") {
-                div1.style.backgroundColor = "skyblue";
-                div1.innerHTML = "This signature is *VALID*.";
-            } else if (sStatus == "invalid") {
-                div1.style.backgroundColor = "deeppink";
-                div1.innerHTML = "This signature is *NOT VALID*.";
-            } else {
-                div1.style.backgroundColor = "yellow";
-                div1.innerHTML = "Please fill values below and push [Verify this sigunature] button.";
-            }
-        }
-
-
-        function onclickRSAEncrypt() {
-            let pub_key = KEYUTIL.getKey(document.crypt_form.pub_key2.value);
-            let encrypt_con = KJUR.crypto.Cipher.encrypt(document.crypt_form.con_crypt.value, pub_key, 'RSA');
-            // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.crypt_form.encrypt_result.value = encrypt_con;
-        }
-
-        function onclickRSADecrypt() {
-            let prv_key = KEYUTIL.getKey(document.crypt_form.prv_key2.value);
-            let decrypt_con = KJUR.crypto.Cipher.decrypt(document.crypt_form.encrypt_result.value, prv_key, 'RSA');
-            // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.crypt_form.decrypt_result.value = decrypt_con;
-        }
-
-
-        function onclickAESEncrypt() {
-            let con = document.aes_form.aes_con.value;
-            let key = document.aes_form.aes_key.value;
-            let iv = document.aes_form.aes_iv.value;
-            let encrypt_con = encryptAES(con, key, iv);
-            // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.aes_form.aes_encrypt_result.value = encrypt_con;
-        }
-
-        function onclickAESDecrypt() {
-            let con = document.aes_form.aes_encrypt_result.value;
-            let key = document.aes_form.aes_key.value;
-            let iv = document.aes_form.aes_iv.value;
-            let decrypt_con = decryptAES(con, key, iv);
-            // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.aes_form.aes_decrypt_result.value = decrypt_con;
-        }
-
-    </script>
+    <script language="JavaScript" type="text/javascript" src="./jquery-3.4.1.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./jsrsasign-all-min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./jquery.sign.js"></script>
     <style type="text/css">
         TD {
             vertical-align: top
@@ -172,65 +11,58 @@
     </style>
 </head>
 <body>
+
 <h1>Sample Application for RSA signing in JavaScript</h1>
-<form name="form1">
+<form name="form_rsa_sign">
     <table border="0">
         <tr>
             <th>Signer</th>
-            <th></th>
             <th>Verifier</th>
         </tr>
 
         <tr>
             <td>
-                PEM RSA Private Key<br/>
-                <!-- _test/z5.* for X.509v1 certificate and private key -->
-                <textarea name="prvkey1" rows="10" cols="65"></textarea><br/>
-                Text message to be signed.<br/>
-                <input type="text" name="msgsigned" size="50" value="aaa"/><br/>
+                <br/>PEM RSA Private Key<br/>
+                <textarea name="prv_key" rows="10" cols="65"></textarea><br/>
             </td>
-            <td></td>
             <td>
-                Verification Result
-                <div id="verifyresult" style="background: yellow">Please fill values below and push "Verify this
-                    sigunature" button.
-                </div>
+                <br/>Signer's Public Key Certificate.<br/>
+                <textarea name="cert" rows="10" cols="65"></textarea><br/>
             </td>
         </tr>
 
         <tr>
             <td>
-                <select name="hashalg">
+                <br/>PEM RSA Private Key<br/>
+                <textarea name="sign_src" rows="4" cols="65">aaa</textarea><br/>
+            </td>
+            <td>
+                <br/>Generated Signature<br/>
+                <textarea name="signed_data" rows="4" cols="65"></textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <td><br/>
+                <select name="hash_alg">
                     <option value="SHA1withRSA" selected>SHA1
                     <option value="SHA256withRSA">SHA256
                     <option value="SHA512withRSA">SHA512
-                    <option value="md5">MD5
-                    <option value="ripemd160">RIPEMD-160
                 </select>
                 <input type="button" value="Sign to this message &darr;" onClick="onclickRSASign();"/><br/>
             </td>
-            <td>
-                <input type="button" value="Copy &rarr;" onClick="copyMsgAndSig();"/><br/>
-            </td>
-            <td>
+            <td><br/>
                 <input type="button" value="Verify this signature &uarr;" onClick="onclickRSAVerify();"/><br/>
             </td>
         </tr>
 
         <tr>
+            <td></td>
             <td>
-                Generated Signature<br/>
-                <textarea name="siggenerated" rows="4" cols="65"></textarea>
-            </td>
-            <td>
-            </td>
-            <td>
-                Verifying Signature<br/>
-                <textarea name="sigverified" rows="4" cols="65"></textarea><br/>
-                Text message to be verified.<br/>
-                <input type="text" name="msgverified" size="100" value="aaa"/><br/>
-                Signer's Public Key Certificate.<br/>
-                <textarea name="cert" rows="10" cols="65"></textarea><br/>
+                Verification Result<br/>
+                <div id="verify_result" style="background: yellow">Please fill values below and push "Verify this
+                    signature" button.
+                </div>
             </td>
         </tr>
 
@@ -238,42 +70,39 @@
 </form>
 
 <h1>Sample Application for RSA crypt in JavaScript</h1>
-<form name="crypt_form">
+<form name="form_rsa_crypt">
     <table border="0">
         <tr>
             <th>enCrypt</th>
-            <th></th>
             <th>deCrypt</th>
         </tr>
 
         <tr>
             <td>
                 Public Key Cert<br/>
-                <textarea name="pub_key2" rows="10" cols="65"></textarea>
+                <textarea name="pub_cert" rows="10" cols="65"></textarea>
             </td>
-            <td></td>
             <td>
                 PEM RSA Private Key<br/>
-                <textarea name="prv_key2" rows="10" cols="65"></textarea>
+                <textarea name="prv_key" rows="10" cols="65"></textarea>
             </td>
         </tr>
         <tr>
             <td>
                 <br/>
                 Text message to be crypt.<br/>
-                <input type="text" name="con_crypt" size="50" value="{'key':'3OK+u3ivTSj3zwjt','iv':'12341234asdfasdf'}"/><br/>
+                <input type="text" name="con_crypt" size="50"
+                       value="{'key':'3OK+u3ivTSj3zwjt','iv':'12341234asdfasdf'}"/><br/>
             </td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
             <td>
-                <select name="hashalg2">
+                <select name="hash_alg2">
                     <option value="rsa" selected>RSA
                 </select>
                 <input type="button" value="encrypt" onClick="onclickRSAEncrypt();"/><br/>
             </td>
-            <td></td>
             <td>
                 <input type="button" value="decrypt" onClick="onclickRSADecrypt();"/><br/>
             </td>
@@ -283,7 +112,6 @@
                 encrypt result<br/>
                 <textarea name="encrypt_result" rows="4" cols="65"></textarea>
             </td>
-            <td></td>
             <td>
                 decrypt result<br/>
                 <textarea name="decrypt_result" rows="4" cols="65"></textarea>
@@ -300,7 +128,6 @@
     <table border="0">
         <tr>
             <th>enCrypt</th>
-            <th></th>
             <th>deCrypt</th>
         </tr>
 
@@ -309,7 +136,6 @@
                 AES Key<br/>
                 <input type="text" name="aes_key" size="24" value="3OK+u3ivTSj3zwjt"/><br/>
             </td>
-            <td></td>
             <td>
                 AES iv<br/>
                 <input type="text" name="aes_iv" size="24" value="12341234asdfasdf"/><br/>
@@ -322,13 +148,8 @@
                 <textarea name="aes_con" rows="4" cols="65">
 Modify the text message 'aaa' to anything you want.
 Choose hash algorithm for signing 'SHA1' or 'SHA256'.
-Push 'Sign to this message' button in the left.
-Push 'Copy' button in the middle to copy the message to be signed and the generated signature value to verification form in the right.
-Push 'Verify this message' in the right.
-Then you can see signature verification result in the top of right.
                 </textarea>
             </td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -337,7 +158,6 @@ Then you can see signature verification result in the top of right.
                 encrypt result<br/>
                 <input type="button" value="encrypt" onClick="onclickAESEncrypt();"/><br/>
             </td>
-            <td></td>
             <td>
                 <br/>
                 decrypt result<br/>
@@ -348,67 +168,142 @@ Then you can see signature verification result in the top of right.
             <td>
                 <textarea name="aes_encrypt_result" rows="4" cols="65"></textarea>
             </td>
-            <td></td>
             <td>
                 <textarea name="aes_decrypt_result" rows="4" cols="65"></textarea>
-            </td>
             </td>
         </tr>
 
     </table>
 </form>
 
-
-<h3>How to sign and verify a text message (simple usage)</h3>
-<ol>
-    <li>Modify the text message 'aaa' to anything you want.</li>
-    <li>Choose hash algorithm for signing 'SHA1' or 'SHA256'.</li>
-    <li>Push 'Sign to this message' button in the left.</li>
-    <li>Push 'Copy' button in the middle to copy the message to be signed and the generated signature value to
-        verification form in the right.
-    </li>
-    <li>Push 'Verify this message' in the right.</li>
-    <li>Then you can see signature verification result in the top of right.</li>
-</ol>
-<h3>Note for signing in the left form.</h3>
-See below when you want to specify message and private key to be signed.
-<ul>
-    <li>In the 'PEM RSA Private Key' text area, you can specify
-        signer's private key. The format of the key should be
-        PKCS#1 PEM text formatted and unencrypted RSA private key.
-    </li>
-</ul>
-
-<h3>Note for signature verification in the right form.</h3>
-See below when you want to specify message,
-signature value and public key certificate to be verified.
-<ul>
-    <li>In the 'Verifying Signature' field, you can specify
-        any signature value to be verified.
-        Signature value should be hexa decimal encoded 'RSASSA-PKCS1-v1_5' signature.
-        Currently this supports 'SHA1withRSA' and 'SHA256withRSA' signature algorihtm.
-        RSA key length have been tested from 512bit to 2048bit for this program.
-    </li>
-    <li>
-        In the "Signer's Public Key Certificate" field,
-        you can specify signer's public key certificate to be verified.
-        The value should be PEM encoded X.509 certificate with RSA public key.
-        X.509v1 and X.509v3 is available however X.509v2 is not supported now.
-    </li>
-</ul>
-<center>
-    Copyright &copy; 2010-2012 Kenji Urushima, All Rights Reserved.
-</center>
-
-<div align="right">
-    <a href="index.html">Go back to index</a>
-</div>
-
 </body>
 <script>
-    document.form1.prvkey1.value = prv_key;
-    document.form1.cert.value = cert_key;
-    document.crypt_form.prv_key2.value = prv_key;
-    document.crypt_form.pub_key2.value = cert_key;
+    let prv_key = '-----BEGIN PRIVATE KEY-----\n' +
+        'MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCwXIllX7MGD6QE\n' +
+        'Vyc8Eppf4578fwRsmSJNeq7fzLpV6pBJLbHnlooAvYKP6roLErxN2/ZpZtlFF+0X\n' +
+        'FYlURSlILh9Qux7HiFzCAYRLDoPURKbEHMXUecPfVMhcb4ZdBCIgB6j/Ys83j+Qx\n' +
+        '00x4WDBdvHF8TiRfUL7h4kPVNTBLP7VPzhdxr2idZSmilqG2BDrzRke4ppUkI8TP\n' +
+        'fHoEZTdQi3DBboDnu/6I4NNw3PgbJbFqHnXY8RvgThqL0KOMnt6vaFjm52xli1yj\n' +
+        'zivGkJbZvsHr1pWTPzwFjNRsLiLGp+wuf7G1ttxVjTiaxpkYtz3l4NP+axvC9akV\n' +
+        'YEiMiHCnAgMBAAECggEAcQR8D/jJ8uJnC1kGjZqmTzjBE7IaFbX0o44xLr410wUk\n' +
+        'PaEI1w5DlcHcP3n+i0YQYhzJxjXgmkSA7UAh510C3XyhGM0xJlEekD0EmEzO8mKk\n' +
+        'NBz0MftuKFpeo83cXxNdAwWlqTOa81JEvCFaaeyp4gf2+d/hsys9h+fF7IXPUwiK\n' +
+        'Ca+DURlRPObiObvdfdVAUxrdXNTaLOekwm5EtOKm+RiiOfJ66Kb8exlLUwgqFTq9\n' +
+        '5xDkZoB6QncfJC0IaHzroMn0d9N6YA1HPJxF8ubBgmkFsQhMKdkTVXJIEEaEC1BT\n' +
+        'O+GQRqg9Fq79sRCt1LsLqcUqm5OFFU3HswCHiWUJQQKBgQDdciRJy94MtMLrE3yI\n' +
+        'SzZOkesocNiimRge2+YGl6nxxWELWXwG4vdZ8Cki8Hqyuo13dzwycuFOfxZt4XIo\n' +
+        'v5Lzq31PD27Hpl73uDRpiSJ3ojLkiobNAx10npg04nVzusi7hrDICCaZEQBPAfgM\n' +
+        'SeEbJNN9WUmIw3q5qwNFLZ70kQKBgQDL4XUbgh5X7t/1+DywpiuZNfLTKVA3BZQz\n' +
+        'y0P+7qGS4p1NC3Yloy3rAvbGjZoixUaKFO254yL5Yjus8CAO0+PL6u3SkZrKGmB3\n' +
+        'cG/24s9LWosrVFQH5Qj8vz7bhtpdn5OQyvydufJOBuAaGtJ7drO0sDLyEHXfEK0x\n' +
+        'XUTMZthNtwKBgQCCI9llsTT+/KBsrJgMNT9mL2Um8CKwdA5z3EGz8B/E4X2lwOId\n' +
+        '3fcF2Rkj2nYRYYdQBTfQYik9C30v+EUx41xGbasH8oblOEYpiQzsVNZ3vk/wdeTA\n' +
+        'ySrfZXEH62qhJ81eP8rW08tzO0WWKQ8Qkb6ESEEuMnH/uPn/8ZvLZQM8sQKBgE7d\n' +
+        'dJZie+hZ38pe7uMKNF08sCScm4ndH5n1a+UGW/vcqyptX5Npjs6Uw+7EQbZnh0TM\n' +
+        'mbTJNvMu25SnAk+aCUkNJFfKuQyqrVwmYzkmPTeR27m0EhlHsHVMaT0z6e5DVyqw\n' +
+        'So2cqy0hnbibXYYiwZsIeXyHf4D9C3HH+V/z/IH7AoGBAKj0gPoqMMnISh84GlCP\n' +
+        'U+UfRF5Jyl14t5oPizub5FEaq/aywCA4GchDmGUtIMrejZTvgxu7QSKOjpv7y4Sl\n' +
+        'ydmTRjb9sSaWYohGYV24RWgN11/Pq4JWSKfZyu0OuZOvyTV2l7uusBs/G5Ahnu2E\n' +
+        'BqB10N7adUh7UZ+yhHwHwFc1\n' +
+        '-----END PRIVATE KEY-----\n';
+    let pub_cert = '-----BEGIN CERTIFICATE-----\n' +
+        'MIID7jCCAtagAwIBAgICMMswDQYJKoZIhvcNAQELBQAwczELMAkGA1UEBhMCQ04x\n' +
+        'EDAOBgNVBAgMB1RpYW5qaW4xEDAOBgNVBAcMB1RpYW5qaW4xFTATBgNVBAoMDENI\n' +
+        'SU5BU1NMIEluYzEpMCcGA1UEAwwgQ0hJTkFTU0wgQ2VydGlmaWNhdGlvbiBBdXRo\n' +
+        'b3JpdHkwHhcNMTkwOTIyMDg1MDE2WhcNMjAwOTIxMDg1MDE2WjCBgDELMAkGA1UE\n' +
+        'BhMCQ04xEDAOBgNVBAgMB1NpY2h1YW4xEDAOBgNVBAoMB0hpdCBQaW4xDzANBgNV\n' +
+        'BAsMBkRFViBJVDEVMBMGA1UEAwwMd3d3LnBpbi50ZXN0MSUwIwYJKoZIhvcNAQkB\n' +
+        'FhZ6aG91amlob25nMTlAZ21haWwuY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\n' +
+        'MIIBCgKCAQEAsFyJZV+zBg+kBFcnPBKaX+Oe/H8EbJkiTXqu38y6VeqQSS2x55aK\n' +
+        'AL2Cj+q6CxK8Tdv2aWbZRRftFxWJVEUpSC4fULsex4hcwgGESw6D1ESmxBzF1HnD\n' +
+        '31TIXG+GXQQiIAeo/2LPN4/kMdNMeFgwXbxxfE4kX1C+4eJD1TUwSz+1T84Xca9o\n' +
+        'nWUpopahtgQ680ZHuKaVJCPEz3x6BGU3UItwwW6A57v+iODTcNz4GyWxah512PEb\n' +
+        '4E4ai9CjjJ7er2hY5udsZYtco84rxpCW2b7B69aVkz88BYzUbC4ixqfsLn+xtbbc\n' +
+        'VY04msaZGLc95eDT/msbwvWpFWBIjIhwpwIDAQABo34wfDAJBgNVHRMEAjAAMC8G\n' +
+        'CWCGSAGG+EIBDQQiFiBDSElOQVNTTCBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAd\n' +
+        'BgNVHQ4EFgQUsP1o1Wc7ZwJ/yIlCrRMjlhaxMWkwHwYDVR0jBBgwFoAUXB8j+sjh\n' +
+        'ITHC2Df2iPzSb8JUQzMwDQYJKoZIhvcNAQELBQADggEBAFPwCHVJ3BvG7bL92T2V\n' +
+        '85bOmGqYbSistRILMpLfLoUlVDODNR4Q55gj0l3me4vsLNxiInlermJ3nXhnCmNg\n' +
+        'utjQwrO/Gd9XFfkdbdWdEejAM9YIrj2Vn5aIk5Q2GVukEhjwj71dnQuzv2GZrPQR\n' +
+        'FXE5SNI8wAAHyF/e/ShpwK/muwllBiKOEykkcdgNSHIV1aCstgmpaOP3JJYDVxc7\n' +
+        'vmAf2EPQOvJvLcWzIruxDFFW9CKU8iht1wQSmvl3DvlqCiQtu2puZ+gZJA4RYseE\n' +
+        'Gz0mjR8e8qpTp5NWl8PD1OxYMJU6ODZbo3Oq4taxSLkIlJ3ARfTY4I+9V6kLYJLG\n' +
+        'OzU=\n' +
+        '-----END CERTIFICATE-----\n';
+
+
+    function onclickRSASign() {
+        // let rsa = new RSAKey();
+        // rsa.readPrivateKeyFromPEMString(document.form_rsa_sign.prv_key.value);
+        // let hash_alg = document.form_rsa_sign.hash_alg.value;
+        // let hSig = rsa.sign(document.form_rsa_sign.sign_src.value, hash_alg);
+        // document.form_rsa_sign.signed_data.value = hSig;
+
+        let rsa_form = document.form_rsa_sign;
+        let sign_data = rsa_form.sign_src.value;
+        let prv_key = rsa_form.prv_key.value;
+        let hash_alg = rsa_form.hash_alg.value;
+        rsa_form.signed_data.value = $.signRSA(sign_data, prv_key, hash_alg);
+    }
+
+    function onclickRSAVerify() {
+        // let sMsg = document.form_rsa_sign.msgverified.value;
+        // let hSig = document.form_rsa_sign.sigverified.value;
+        // let pubKey = KEYUTIL.getKey(document.form_rsa_sign.cert.value);
+        // let isValid = pubKey.verify(sMsg, hSig);
+
+        let rsa_form = document.form_rsa_sign;
+        let sign_data = rsa_form.sign_src.value;
+        let signed_data = rsa_form.signed_data.value;
+        let cert_key = rsa_form.cert.value;
+        let hash_alg = rsa_form.hash_alg.value;
+        let isValid = $.verifyRSA(sign_data, signed_data, cert_key, hash_alg);
+        alert('verify result:' + isValid);
+        let div1 = document.getElementById("verify_result");
+        if (isValid) {
+            div1.style.backgroundColor = "skyblue";
+            div1.innerHTML = "This signature is *VALID*.";
+        } else {
+            div1.style.backgroundColor = "deeppink";
+            div1.innerHTML = "This signature is *NOT VALID*.";
+        }
+    }
+
+
+    function onclickRSAEncrypt() {
+        let rsa_crypt_form = document.form_rsa_crypt;
+        let pub_cert = rsa_crypt_form.pub_cert.value;
+        let data_src = rsa_crypt_form.con_crypt.value;
+        rsa_crypt_form.encrypt_result.value = $.encryptRSA(data_src, pub_cert);
+    }
+
+    function onclickRSADecrypt() {
+        let rsa_crypt_form = document.form_rsa_crypt;
+        let data_crypt = rsa_crypt_form.encrypt_result.value;
+        let prv_key = rsa_crypt_form.prv_key.value;
+        rsa_crypt_form.decrypt_result.value = $.decryptRSA(data_crypt, prv_key);
+    }
+
+
+    function onclickAESEncrypt() {
+        let aes_form = document.aes_form;
+        let con = aes_form.aes_con.value;
+        let key = aes_form.aes_key.value;
+        let iv = aes_form.aes_iv.value;
+        aes_form.aes_encrypt_result.value = $.encryptAES(con, key, iv);
+    }
+
+    function onclickAESDecrypt() {
+        let aes_form = document.aes_form;
+        let con = aes_form.aes_encrypt_result.value;
+        let key = aes_form.aes_key.value;
+        let iv = aes_form.aes_iv.value;
+        aes_form.aes_decrypt_result.value = $.decryptAES(con, key, iv);
+    }
+
+    document.form_rsa_sign.prv_key.value = prv_key;
+    document.form_rsa_sign.cert.value = pub_cert;
+    document.form_rsa_crypt.prv_key.value = prv_key;
+    document.form_rsa_crypt.pub_cert.value = pub_cert;
 </script>
 </html>

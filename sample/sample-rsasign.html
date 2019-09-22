@@ -132,17 +132,17 @@
 
 
         function onclickRSAEncrypt() {
-            let pub_key = KEYUTIL.getKey(document.crypt_form.pub_key2.value);
-            let encrypt_con = KJUR.crypto.Cipher.encrypt(document.crypt_form.con_crypt.value, pub_key, 'RSA');
+            let pub_key = KEYUTIL.getKey(document.form_rsa_crypt.pub_cert.value);
+            let encrypt_con = KJUR.crypto.Cipher.encrypt(document.form_rsa_crypt.con_crypt.value, pub_key, 'RSA');
             // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.crypt_form.encrypt_result.value = encrypt_con;
+            document.form_rsa_crypt.encrypt_result.value = encrypt_con;
         }
 
         function onclickRSADecrypt() {
-            let prv_key = KEYUTIL.getKey(document.crypt_form.prv_key2.value);
-            let decrypt_con = KJUR.crypto.Cipher.decrypt(document.crypt_form.encrypt_result.value, prv_key, 'RSA');
+            let prv_key = KEYUTIL.getKey(document.form_rsa_crypt.prv_key.value);
+            let decrypt_con = KJUR.crypto.Cipher.decrypt(document.form_rsa_crypt.encrypt_result.value, prv_key, 'RSA');
             // document.form1.siggenerated.value = linebrk(hSig, 64);
-            document.crypt_form.decrypt_result.value = decrypt_con;
+            document.form_rsa_crypt.decrypt_result.value = decrypt_con;
         }
 
 
@@ -408,7 +408,7 @@ signature value and public key certificate to be verified.
 <script>
     document.form1.prvkey1.value = prv_key;
     document.form1.cert.value = cert_key;
-    document.crypt_form.prv_key2.value = prv_key;
-    document.crypt_form.pub_key2.value = cert_key;
+    document.form_rsa_crypt.prv_key.value = prv_key;
+    document.form_rsa_crypt.pub_cert.value = cert_key;
 </script>
 </html>
