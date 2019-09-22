@@ -304,11 +304,41 @@ Choose hash algorithm for signing 'SHA1' or 'SHA256'.
         aes_form.aes_decrypt_result.value = $.decryptAES(con, key, iv);
     }
 
+
+    let arr_data = [
+        'BBBBBB',
+        'AAAAAA',
+        'DDDDDD',
+        '打开电脑',
+        'CCCCCC',
+    ];
+    let test_data = {
+        code : '200',
+        message:'successful',
+        data:arr_data,
+        data_obj:{
+            name:'打开电脑',
+            word:'你好',
+            num:'12344565'
+        },
+        com_bin:{
+            name:'打开电脑',
+            word:'你好',
+            name_arr:arr_data
+        }
+    };
+
+
     document.form_rsa_sign.prv_key.value = prv_key;
     document.form_rsa_sign.cert.value = pub_cert;
     document.form_rsa_crypt.prv_key.value = prv_key;
     document.form_rsa_crypt.pub_cert.value = pub_cert;
-    document.aes_form.aes_key.value = $.randomStr();
-    document.aes_form.aes_iv.value = $.randomStr();
+    let aes_key = $.randomStr();
+    let aes_iv = $.randomStr();
+    document.aes_form.aes_key.value = aes_key;
+    document.aes_form.aes_iv.value = aes_iv;
+    document.aes_form.aes_con.value = JSON.stringify(test_data);
+    document.form_rsa_crypt.con_crypt.value = JSON.stringify({aes_key,aes_iv});
+
 </script>
 </html>

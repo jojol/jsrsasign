@@ -78,19 +78,9 @@
     };
 
     $.makeSignData = function (data) {
-        if ($.isObject(value) || $.isArray(value)) {
+        if ($.isObject(data) || $.isArray(data)) {
             let sortedData = [];
-            if ($.isObject(data)) {
-                let reqKeys = Object.keys(data).sort();
-                for (let key of reqKeys) {
-                    let value = data[key];
-                    if ($.isObject(value) || $.isArray(value)) {
-                        sortedData[key] = $.makeSignData(value);
-                    } else {
-                        sortedData[key] = value.toString();
-                    }
-                }
-            } else if (is_continuous_indexed_array(data)) {
+            if ($.isArray(data)) {
                 for (let value of data) {
                     if ($.isObject(value) || $.isArray(value)) {
                         sortedData.push($.makeSignData(value));
@@ -100,17 +90,19 @@
                 }
                 sortedData = sortedData.sort();
             } else {
-                let reqKeys = data.keys().sort();
+                let reqKeys = Object.keys(data).sort();
                 for (let key of reqKeys) {
                     let value = data[key];
                     if ($.isObject(value) || $.isArray(value)) {
-                        sortedData[key] = $.makeSignData(value);
+                        sortedData.push($.makeSignData(value));
                     } else {
-                        sortedData[key] = value.toString();
+                        sortedData.push(value.toString());
                     }
                 }
             }
-            return sortedData.join('==');
+            let result = sortedData.join('|');
+            console.log(result);
+            return result;
         } else {
             return data.toString();
         }
