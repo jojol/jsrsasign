@@ -38,6 +38,23 @@
         return CryptoJS.enc.Base64.stringify(encryptedWA);
     };
 
+    /**
+     *
+     * @param sig
+     * @param signSrc
+     */
+    function updateSigData(sig = new KJUR.crypto.Signature({"alg": 'SHA256withRSA'}),signSrc = 'aaa'){
+        // // sig.updateString(signSrc);// update data
+        // let data = CryptoJS.enc.Utf8.parse(signSrc);
+        // // let data = CryptoJS.enc.Hex.parse(signSrc);
+        // // sig.updateHex(data.toString());// update data
+        // console.log(data.toString());
+        // sig.updateString(data.toString());// update data
+
+        let data = $.bytesToHexString($.encodeUtf8(signSrc));
+        console.log(data.toString());
+        sig.updateString(data.toString());// update data
+    }
 
     $.signRSA = function (signSrc = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...', hashAlg = 'SHA256withRSA') {
         // let rsa = new RSAKey();
@@ -49,7 +66,7 @@
         // initialize
         let sig = new KJUR.crypto.Signature({"alg": hashAlg});
         sig.init(prvKey);   // rsaPrivateKey of RSAKey object// initialize for signature generation
-        sig.updateString(signSrc);// update data
+        updateSigData(sig,signSrc);
         return sig.sign();// calculate signature
     };
 
@@ -62,7 +79,7 @@
         // initialize
         let sig = new KJUR.crypto.Signature({"alg": hashAlg}); // initialize for signature validation
         sig.init(pubCert); // signer's certificate
-        sig.updateString(signSrc);// update data
+        updateSigData(sig,signSrc);
         return sig.verify(signedStr); // verify signature
     };
 
@@ -116,5 +133,39 @@
             pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
         }
         return pwd;
+    };
+
+    $.encodeUtf8 = function (text) {
+        const code = encodeURIComponent(text);
+        const bytes = [];
+        for (let i = 0; i < code.length; i++) {
+            const c = code.charAt(i);
+            if (c === '%') {
+                const hex = code.charAt(i + 1) + code.charAt(i + 2);
+                const hexVal = parseInt(hex, 16);
+                bytes.push(hexVal);
+                i += 2;
+            } else bytes.push(c.charCodeAt(0));
+        }
+        return bytes;
+    };
+
+    $.decodeUtf8 = function (bytes) {
+        let encoded = "";
+        for (let i = 0; i < bytes.length; i++) {
+            encoded += '%' + bytes[i].toString(16);
+        }
+        return decodeURIComponent(encoded);
+    };
+
+
+    const HEX_CHAR = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+    $.bytesToHexString = function (bytes) {
+        let chars = [];
+        for (let i = 0; i < bytes.length; i++) {
+            chars.push(HEX_CHAR[bytes[i] >>> 4 & 0xf]);
+            chars.push(HEX_CHAR[bytes[i] & 0xf]);
+        }
+        return chars.join('');
     };
 })(jQuery);
