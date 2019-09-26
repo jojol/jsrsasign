@@ -23,6 +23,7 @@
 
     $.decryptAES = function (base64DataStr, key, iv, mode = CryptoJS.mode.CBC, padding = CryptoJS.pad.Pkcs7) {
         let ciphertext = CryptoJS.enc.Base64.parse(base64DataStr);
+        // let ciphertext = CryptoJS.enc.Hex.parse(base64DataStr);
         key = CryptoJS.enc.Utf8.parse(key);
         iv = CryptoJS.enc.Utf8.parse(iv);
         let decrypted = CryptoJS.AES.decrypt({key, iv, ciphertext}, key, {iv, mode, padding});
@@ -36,6 +37,7 @@
         let encryptedHex = CryptoJS.AES.encrypt(data, key, {iv, mode, padding});
         let encryptedWA = CryptoJS.enc.Hex.parse(encryptedHex.toString());
         return CryptoJS.enc.Base64.stringify(encryptedWA);
+        // return CryptoJS.enc.Hex.stringify(encryptedWA);
     };
 
     $.signRSA = function (signSrc = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...', hashAlg = 'SHA256withRSA') {
