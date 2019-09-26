@@ -38,35 +38,18 @@
         return CryptoJS.enc.Base64.stringify(encryptedWA);
     };
 
-    /**
-     *
-     * @param sig
-     * @param signSrc
-     */
-    function updateSigData(sig = new KJUR.crypto.Signature({"alg": 'SHA256withRSA'}),signSrc = 'aaa'){
-        // // sig.updateString(signSrc);// update data
-        // let data = CryptoJS.enc.Utf8.parse(signSrc);
-        // // let data = CryptoJS.enc.Hex.parse(signSrc);
-        // // sig.updateHex(data.toString());// update data
-        // console.log(data.toString());
-        // sig.updateString(data.toString());// update data
-
-        let data = $.bytesToHexString($.encodeUtf8(signSrc));
-        console.log(data.toString());
-        sig.updateString(data.toString());// update data
-    }
-
     $.signRSA = function (signSrc = 'aaa', prvKey = '-----BEGIN PRIVATE KEY-----...', hashAlg = 'SHA256withRSA') {
+        //该方式不行 好些私钥会报错
         // let rsa = new RSAKey();
         // rsa.readPrivateKeyFromPEMString(document.form1.prvkey1.value);
         // let hashAlg = document.form1.hashalg.value;
         // let hSig = rsa.sign(document.form1.msgsigned.value, hashAlg);
         // document.form1.siggenerated.value = hSig;
 
-        // initialize
+        // 该方法目前验证比较稳定
         let sig = new KJUR.crypto.Signature({"alg": hashAlg});
         sig.init(prvKey);   // rsaPrivateKey of RSAKey object// initialize for signature generation
-        updateSigData(sig,signSrc);
+        updateSigData(sig, signSrc);
         return sig.sign();// calculate signature
     };
 
@@ -79,7 +62,7 @@
         // initialize
         let sig = new KJUR.crypto.Signature({"alg": hashAlg}); // initialize for signature validation
         sig.init(pubCert); // signer's certificate
-        updateSigData(sig,signSrc);
+        updateSigData(sig, signSrc);
         return sig.verify(signedStr); // verify signature
     };
 
@@ -94,6 +77,7 @@
         return KJUR.crypto.Cipher.decrypt(cryptData, prv_key, 'RSA');
     };
 
+    //对数据进行排序 生成待签名的字符串
     $.makeSignData = function (data) {
         if ($.isObject(data) || $.isArray(data)) {
             let sortedData = [];
@@ -125,16 +109,18 @@
         }
     };
 
-    $.randomStr =function(len=16) {
+    //获取随机字符串 可用来动态生成AES key 和 iv
+    $.randomStr = function (len = 16) {
         let $chars = '+=ABCDEFGHIJKLMNPOQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
         let maxPos = $chars.length;
         let pwd = '';
-        for (let i = len; i >0; i--) {
+        for (let i = len; i > 0; i--) {
             pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
         }
         return pwd;
     };
 
+    //UTF8编码
     $.encodeUtf8 = function (text) {
         const code = encodeURIComponent(text);
         const bytes = [];
@@ -150,6 +136,7 @@
         return bytes;
     };
 
+    //UTF8解码
     $.decodeUtf8 = function (bytes) {
         let encoded = "";
         for (let i = 0; i < bytes.length; i++) {
@@ -160,6 +147,7 @@
 
 
     const HEX_CHAR = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
+    //将数组转为16进制的字符串显示
     $.bytesToHexString = function (bytes) {
         let chars = [];
         for (let i = 0; i < bytes.length; i++) {
@@ -168,4 +156,19 @@
         }
         return chars.join('');
     };
+
+
+    function updateSigData(sig = new KJUR.crypto.Signature({"alg": 'SHA256withRSA'}), signSrc = 'aaa') {
+        // // sig.updateString(signSrc);// update data
+        // let data = CryptoJS.enc.Utf8.parse(signSrc);
+        // // let data = CryptoJS.enc.Hex.parse(signSrc);
+        // // sig.updateHex(data.toString());// update data
+        // console.log(data.toString());
+        // sig.updateString(data.toString());// update data
+
+        let data = $.bytesToHexString($.encodeUtf8(signSrc));
+        console.log(data.toString());
+        //如果直接传递string js这边是uriEncode -> escapse -> utf8, java 那边是直接utf8 会导致两边签名数据不一样，所以传递utf8后的字符串
+        sig.updateString(data.toString());// update data
+    }
 })(jQuery);
